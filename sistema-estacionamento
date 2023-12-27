@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+
+class Estacionamento
+{
+    static void Main()
+    {
+        List<Veiculo> veiculosEstacionados = new List<Veiculo>();
+
+        while (true)
+        {
+            Console.WriteLine("Escolha uma opção:");
+            Console.WriteLine("1 - Adicionar veículo");
+            Console.WriteLine("2 - Remover veículo");
+            Console.WriteLine("3 - Finalizar e exibir total");
+            Console.WriteLine("4 - Sair");
+
+            string opcao = Console.ReadLine();
+
+            switch (opcao)
+            {
+                case "1":
+                    AdicionarVeiculo(veiculosEstacionados);
+                    break;
+                case "2":
+                    RemoverVeiculo(veiculosEstacionados);
+                    break;
+                case "3":
+                    FinalizarEstacionamento(veiculosEstacionados);
+                    break;
+                case "4":
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Opção inválida. Tente novamente.");
+                    break;
+            }
+        }
+    }
+
+    static void AdicionarVeiculo(List<Veiculo> veiculosEstacionados)
+    {
+        Console.WriteLine("Informe a placa do veículo:");
+        string placa = Console.ReadLine();
+        Veiculo veiculo = new Veiculo(placa);
+        veiculosEstacionados.Add(veiculo);
+        Console.WriteLine("Veículo adicionado com sucesso.");
+    }
+
+    static void RemoverVeiculo(List<Veiculo> veiculosEstacionados)
+    {
+        Console.WriteLine("Informe a placa do veículo a ser removido:");
+        string placa = Console.ReadLine();
+        Veiculo veiculoRemover = veiculosEstacionados.Find(v => v.Placa == placa);
+
+        if (veiculoRemover != null)
+        {
+            veiculosEstacionados.Remove(veiculoRemover);
+            Console.WriteLine("Veículo removido com sucesso.");
+        }
+        else
+        {
+            Console.WriteLine("Veículo não encontrado.");
+        }
+    }
+
+    static void FinalizarEstacionamento(List<Veiculo> veiculosEstacionados)
+    {
+        double totalCobrado = 0;
+
+        foreach (var veiculo in veiculosEstacionados)
+        {
+            TimeSpan tempoEstacionado = DateTime.Now - veiculo.HoraEntrada;
+            double valorCobrado = tempoEstacionado.TotalHours * 10;
+            totalCobrado += valorCobrado;
+
+            Console.WriteLine($"Placa: {veiculo.Placa}, Tempo Estacionado: {tempoEstacionado}, Valor Cobrado: {valorCobrado:C}");
+        }
+
+        Console.WriteLine($"Total cobrado: {totalCobrado:C}");
+        veiculosEstacionados.Clear(); 
+    }
+}
+
+class Veiculo
+{
+    public string Placa { get; set; }
+    public DateTime HoraEntrada { get; set; }
+
+    public Veiculo(string placa)
+    {
+        Placa = placa;
+        HoraEntrada = DateTime.Now;
+    }
+}
